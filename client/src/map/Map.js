@@ -6,10 +6,8 @@ import "./Map.css";
 
 export default function Map() {
   const map = useRef();
-  const [viewPort, setViewPort] = useState({
-    center: [10.733, 59.9056],
-    zoom: [13],
-  });
+  let [center, setCenter] = useState([10.1, 59.1]);
+  let [zoom, setZoom] = useState([11]);
   const [features, setFeatures] = useState([]);
 
   const MapComp = new ReactMapboxGl({
@@ -30,14 +28,19 @@ export default function Map() {
     } catch (error) {
       console.log({ message: error.message });
     }
-  }
+  };
+
+  useEffect(() => {
+    console.log("In useEffect:", zoom);
+  }, [zoom]);
 
   useEffect(() => {
     getAllFeatures();
-  }, [])
+  }, []);
 
   const onDrawCreate = async ({ features }) => {
     try {
+      console.log("print obj inn:", { features });
       const result = await fetch("http://localhost:8080/features", {
         method: "POST",
         headers: {
@@ -46,29 +49,39 @@ export default function Map() {
         body: JSON.stringify(features[0]),
       });
       const resultInJson = await result.json();
-      console.log("print obj:", { resultInJson });
+      console.log("print obj lagret i db:", { resultInJson });
     } catch (error) {
       console.log({ message: error.message });
     }
   };
+
+  const onZoomEnd = (map, event) => {
+    setZoom(() => zoom = [...[map.getZoom()]])
+  }
+
+  const onMoveEnd = (map, event) => {
+    console.log(map)
+    //setCenter(() => center = map.props)
+  }
 
   return (
     <div id="map-container">
       <h1 id="text">Welcome to Map Service</h1>
 
       <div id="text" className={"sidebar"}>
-        Longitude: 10.733 | Latitude: 59.9056 | Zoom: 13
+        Longitude: {center[0]} | Latitude: {center[0]} | Zoom:{zoom}
       </div>
 
       <MapComp
         ref={map}
         className="map"
         containerStyle={{ height: "100vh", width: "100vw" }}
-        style="mapbox://styles/rosamh/clbcshso8000615t3hncfgc8r"
+        style={"mapbox://styles/rosamh/clbcshso8000615t3hncfgc8r"}
         position="top-right"
-        onMove={(e) => console.log('On the move')}
-        zoom={viewPort.zoom}
-        center={viewPort.center}
+        onMoveEnd={onMoveEnd}
+        center={center}
+        zoom={zoom}
+        onZoomEnd={onZoomEnd}
       >
         <DrawControl
           displayControlsDefault={false}
