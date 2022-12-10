@@ -1,98 +1,66 @@
-import React, { useEffect, useRef, useState } from "react";
-import ReactMapboxGl from "react-mapbox-gl";
-import DrawControl from "react-mapbox-gl-draw";
-import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import React, { useEffect, useRef, useState} from "react";
 import "./Map.css";
+import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 export default function Map() {
-  const map = useRef();
-  let [center, setCenter] = useState([10.1, 59.1]);
-  let [zoom, setZoom] = useState([11]);
-  const [features, setFeatures] = useState([]);
+  // defaults for initial states
+  const mapContainer = useRef(null);
+  const [lng, setLng] = useState(10.728);
+  const [lat, setLat] = useState(59.91);
+  const [zoom, setZoom] = useState(11);
+  const [map, setMap] = useState({});
 
-  const MapComp = new ReactMapboxGl({
-    accessToken: process.env.REACT_APP_MAPBOX_TOKEN,
-  });
-
-  const getAllFeatures = async () => {
-    try {
-      const result = await fetch("http://localhost:8080/features", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const resultInJson = await result.json();
-      setFeatures(resultInJson);
-      console.log("print obj:", { resultInJson });
-    } catch (error) {
-      console.log({ message: error.message });
-    }
-  };
-
+  // initialize the map
   useEffect(() => {
-    console.log("In useEffect:", zoom);
-  }, [zoom]);
+    //if (map.current) return; // initialize map only once
+    const map = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: "mapbox://styles/mapbox/streets-v12",
+      center: [lng, lat],
+      zoom: zoom,
+      position: "top-right",
+    });
+    var draw = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {
+        polygon: "true",
+        point: "true",
+        trash: "true",
+      },
+    });
+    // add the Draw control to your map
+    map.addControl(draw, "top-left");
 
-  useEffect(() => {
-    getAllFeatures();
+    map.on("load", function () {
+      console.log("Map has loaded and you can interact with draw!");
+    });
+
+    setMap(map);
   }, []);
 
-  const onDrawCreate = async ({ features }) => {
-    try {
-      console.log("print obj inn:", { features });
-      const result = await fetch("http://localhost:8080/features", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(features[0]),
-      });
-      const resultInJson = await result.json();
-      console.log("print obj lagret i db:", { resultInJson });
-    } catch (error) {
-      console.log({ message: error.message });
-    }
-  };
-
-  const onZoomEnd = (map, event) => {
-    setZoom(() => zoom = [...[map.getZoom()]])
-  }
-
-  const onMoveEnd = (map, event) => {
-    console.log(map)
-    //setCenter(() => center = map.props)
-  }
+  // stores new state after interaction
+  useEffect(() => {
+    if (!map.current) return; // wait for map to initialize
+    map.current.on("move", () => {
+      setLng(map.current.getCenter().lng.toFixed(4));
+      setLat(map.current.getCenter().lat.toFixed(4));
+      setZoom(map.current.getZoom().toFixed(2));
+    });
+  });
 
   return (
-    <div id="map-container">
+    <div>
       <h1 id="text">Welcome to Map Service</h1>
 
       <div id="text" className={"sidebar"}>
-        Longitude: {center[0]} | Latitude: {center[0]} | Zoom:{zoom}
+        Longitude: {lng} | Latitude: {lat} | Zoom:{zoom}
       </div>
 
-      <MapComp
-        ref={map}
-        className="map"
-        containerStyle={{ height: "100vh", width: "100vw" }}
-        style={"mapbox://styles/rosamh/clbcshso8000615t3hncfgc8r"}
-        position="top-right"
-        onMoveEnd={onMoveEnd}
-        center={center}
-        zoom={zoom}
-        onZoomEnd={onZoomEnd}
-      >
-        <DrawControl
-          displayControlsDefault={false}
-          controls={{
-            polygon: "true",
-            point: "true",
-            trash: "true",
-          }}
-          onDrawCreate={(e) => onDrawCreate(e)}
-        />
-      </MapComp>
+      <div ref={mapContainer} className={"map-container"} />
     </div>
   );
 }

@@ -1,5 +1,9 @@
+.map-container {
+  height: 95vh;
+}
+
 body {
-  margin: 0
+  margin: 0;
 }
 
 h1 {
@@ -26,12 +30,12 @@ h1 {
 }
 
 .calculation-box {
-position: absolute;
-bottom: 25px;
-left: 0;
-text-align: center;
+  position: absolute;
+  bottom: 25px;
+  left: 0;
+  text-align: center;
 }
 
 p {
-margin: 0;
+  margin: 0;
 }
