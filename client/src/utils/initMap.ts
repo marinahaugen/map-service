@@ -18,9 +18,9 @@ export const initMap = (
   const draw = new MapboxDraw({
     displayControlsDefault: false,
     controls: {
-      polygon: "true",
-      point: "true",
-      trash: "true",
+      polygon: true,
+      point: true,
+      trash: true,
     },
   });
 
