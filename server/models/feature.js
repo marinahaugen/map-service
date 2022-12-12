@@ -1,8 +1,15 @@
 const mongoose = require("mongoose");
-const GeoJSON = require('mongoose-geojson-schema');
 
 const featureSchema = new mongoose.Schema({
-  feature: mongoose.Schema.Types.Feature,
+  coordinates: {
+    type: [[[Number]]],
+    required: true
+  },
+  type: {
+    type: String,
+    enum: ['Polygon'],
+    required: true
+  }
 });
 
 module.exports = mongoose.model("Feature", featureSchema);

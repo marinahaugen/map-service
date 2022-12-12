@@ -18,10 +18,12 @@ export const useMap = (container: React.RefObject<HTMLDivElement>) => {
     mapInitRef.current &&
       mapInitRef.current.on("load", () => {
         console.log("Load done, ready to draw");
+
         mapInitRef.current &&
-          mapInitRef.current.on("draw.create", (e) => {console.log(e.features[0])
-          createFeatureHandler(e.features[0])}
-          );
+          mapInitRef.current.on("draw.create", (e) => {
+            console.log(e.features[0].geometry);
+            createFeatureHandler(e.features[0].geometry);
+          });
       });
 
     mapInitRef.current &&
