@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const Feature = require("../models/feature");
-const bodyParser = require("body-parser")
-var jsonParser = bodyParser.json();
 
 async function getFeatureById(req, res, next) {
   let feature;
@@ -35,12 +33,10 @@ router.get("/:id", getFeatureById, (req, res) => {
 
 // Create feature
 router.post("/", async (req, res) => {
-  console.log(req.body, '***req.body')
   const feature = new Feature({
     type: req.body.type,
     coordinates: req.body.coordinates,
   });
-  console.log("feature from schema", feature);
   try {
     const newFeature = await feature.save();
     res.status(201).send(newFeature);
