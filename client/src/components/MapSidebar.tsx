@@ -13,9 +13,9 @@ export const MapSidebar = () => {
         setLng(mapInitRef.current!.getCenter().lng);
         setLat(mapInitRef.current!.getCenter().lat);
         setZoom(mapInitRef.current!.getZoom());
-        console.log("On the move");
+        console.log("MapSidebar: On the move");
       });
-  });
+  }, [lng, lat, zoom]);
 
   return (
     <div id="text" className={"sidebar"}>

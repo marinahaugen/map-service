@@ -1,5 +1,5 @@
 // create
-export async function createFeatureHandler (feature: any) {
+export async function createFeatureHandler(feature: any) {
   try {
     const result = await fetch("http://localhost:8080/features", {
       method: "POST",
@@ -11,12 +11,12 @@ export async function createFeatureHandler (feature: any) {
     const resultInJson = await result.json();
     console.log("print obj lagret i db:", { resultInJson });
   } catch (e: any) {
-    console.log('Error:', { message: e.message});
+    console.log("Error:", { message: e.message });
   }
 }
 
 // list
-export async function listFeaturesHandler (): Promise<GeoJSON.FeatureCollection> {
+export async function listFeaturesHandler(): Promise<GeoJSON.FeatureCollection> {
   try {
     const result = await fetch("http://localhost:8080/features", {
       method: "GET",
@@ -28,9 +28,23 @@ export async function listFeaturesHandler (): Promise<GeoJSON.FeatureCollection>
     console.log("print obj:", { resultInJson });
     return resultInJson;
   } catch {
-    throw new Error('Error')
+    throw new Error("Error");
   }
 }
-;
 
-
+// get
+export async function getFeatureHandler(id: string): Promise<any> {
+  try {
+    const result = await fetch(`http://localhost:8080/features/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const resultInJson = await result.json();
+    console.log("Got feature:", { resultInJson });
+    return resultInJson;
+  } catch {
+    throw new Error("Error");
+  }
+}
