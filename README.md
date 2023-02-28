@@ -1,5 +1,8 @@
 # Map-service
 
+How to start server
+`nodemon server.js`
+
 ## Choices
 
 ### Structure:
@@ -16,7 +19,6 @@
 #### Backend
 - mongoose/mongoDb
 - development server nodemon
-- mongoose-geojson-schema to make GeoJson schema
 - express to make API
 
 ##### More about database

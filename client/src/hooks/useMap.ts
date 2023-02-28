@@ -5,7 +5,7 @@ import { createFeatureHandler, getFeatureHandler } from "../services/features";
 
 export const useMap = async (container: React.RefObject<HTMLDivElement>) => {
   const mapInitRef = useRef<Map | null>(null);
-  const firstFeature = await getFeatureHandler("63986532d08583006e57b725");
+  //const firstFeature = await getFeatureHandler("63986532d08583006e57b725");
 
   // if value of map container exists, initialize map
   useEffect(() => {
@@ -19,7 +19,7 @@ export const useMap = async (container: React.RefObject<HTMLDivElement>) => {
     mapInitRef.current &&
       mapInitRef.current.on("load", () => {
         console.log("Load done, ready to draw");
-
+/*
         mapInitRef.current &&
           mapInitRef.current.addSource("first", firstFeature);
 
@@ -34,6 +34,8 @@ export const useMap = async (container: React.RefObject<HTMLDivElement>) => {
               "fill-opacity": 0.5,
             },
           });
+
+          */
 
         mapInitRef.current &&
           mapInitRef.current.on("draw.create", (e) => {
@@ -56,5 +58,5 @@ export const useMap = async (container: React.RefObject<HTMLDivElement>) => {
       mapInitRef.current.on("move", () => {
         console.log("UseMap: On the move");
       });
-  }, [firstFeature]);
-};
+  }, []); //firstFeature
+}

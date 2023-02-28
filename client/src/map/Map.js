@@ -39,7 +39,7 @@ export default function Map() {
       console.log("Map has loaded and you can interact with draw!");
     });
 
-    setMap(map);
+   setMap(map);
   }, []);
 
   // stores new state after interaction
@@ -62,5 +62,5 @@ export default function Map() {
 
       <div ref={mapContainer} className={"map-container"} />
     </div>
-  );
+  )
 }
